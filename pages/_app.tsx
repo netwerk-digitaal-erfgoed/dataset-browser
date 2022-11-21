@@ -1,32 +1,35 @@
 import { HStack } from "@chakra-ui/react";
 import { SparqlEndpointFetcher } from "fetch-sparql-endpoint";
-import pTimeout from "p-timeout";
-import rdfSerializer from "rdf-serialize";
 import { useEffect, useState } from "react";
-import stringifyStream from "stream-to-string";
 import FacetList from "../components/facetList";
 import ResultList from "../components/resultList";
+import { DatasetRegistration } from "../lib/types/DatasetRegistration";
 
 function DatasetBrowser() {
-  const [datasets, setDatasets] = useState<string>("");
+  const [datasets, setDatasets] = useState<Array<any>>([]);
   useEffect(() => {
     getAllDatasets();
   }, []);
 
   const getAllDatasets = async () => {
-    const fetcher = new SparqlEndpointFetcher();
-    const endpoint = "https://triplestore.netwerkdigitaalerfgoed.nl/sparql";
+    const ds: Array<DatasetRegistration> = [];
+    const fetcher = new SparqlEndpointFetcher({
+      additionalUrlParams: new URLSearchParams({
+        infer: "true",
+        sameAs: "true",
+      }),
+    });
+    const endpoint =
+      "https://triplestore.netwerkdigitaalerfgoed.nl/repositories/registry";
     const query =
       "PREFIX dcat: <http://www.w3.org/ns/dcat#> PREFIX dct: <http://purl.org/dc/terms/> PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT DISTINCT ?dataset ?title ?publisherName WHERE { ?dataset a dcat:Dataset ; dct:title ?title ; dct:publisher ?publisher . ?publisher foaf:name ?publisherName . FILTER(LANG(?title) = '' || LANGMATCHES(LANG(?title), 'en')) FILTER(LANG(?publisherName) = '' || LANGMATCHES(LANG(?publisherName), 'en'))}";
-
-    const unresolvedTriplesStream = fetcher.fetchTriples(endpoint, query);
-    const triplesStream = await pTimeout(unresolvedTriplesStream, {
-      milliseconds: 60000,
+    const bindingsStream = await fetcher.fetchBindings(endpoint, query);
+    bindingsStream.on("data", (bindings) => {
+      ds.push(bindings);
     });
-    const textStream = rdfSerializer.serialize(triplesStream, {
-      contentType: "application/ld+json",
+    bindingsStream.on("end", () => {
+      setDatasets(ds);
     });
-    setDatasets(await stringifyStream(textStream));
   };
 
   return (
