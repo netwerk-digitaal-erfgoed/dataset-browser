@@ -1,4 +1,4 @@
-import { Heading, List, ListItem, VStack, Text } from "@chakra-ui/react";
+import { Heading, List, ListItem, Text, VStack } from "@chakra-ui/react";
 import { DatasetRegistration } from "../lib/types/DatasetRegistration";
 
 interface ResultListProps {
@@ -9,15 +9,18 @@ interface ResultListProps {
 
 function ResultList(props: ResultListProps) {
   const { width = "80%", height = "100vh", datasets } = props;
+  console.log(datasets);
   return (
     <VStack w={width} h={height}>
       <Heading>Results</Heading>
       <List>
-        <ListItem>
-          {datasets.map((ds) => {
-            return <Text>{ds.title.value}</Text>;
-          })}
-        </ListItem>
+        {datasets.map((ds) => {
+          return (
+            <ListItem key={ds.dataset.value}>
+              <Text>{ds.title.value}</Text>
+            </ListItem>
+          );
+        })}
       </List>
     </VStack>
   );

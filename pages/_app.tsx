@@ -1,4 +1,5 @@
-import { HStack } from "@chakra-ui/react";
+import { ChakraProvider, HStack } from "@chakra-ui/react";
+import { theme } from "@chakra-ui/theme";
 import { SparqlEndpointFetcher } from "fetch-sparql-endpoint";
 import { useEffect, useState } from "react";
 import FacetList from "../components/facetList";
@@ -33,10 +34,12 @@ function DatasetBrowser() {
   };
 
   return (
-    <HStack>
-      <FacetList />
-      <ResultList datasets={datasets} />
-    </HStack>
+    <ChakraProvider theme={theme}>
+      <HStack>
+        <FacetList />
+        <ResultList datasets={datasets} />
+      </HStack>
+    </ChakraProvider>
   );
 }
 

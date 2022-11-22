@@ -1,4 +1,4 @@
-import { NamedNode, Literal } from "@rdfjs/types";
+import { Literal, NamedNode } from "@rdfjs/types";
 
 export interface DatasetRegistration {
   dataset: NamedNode;
