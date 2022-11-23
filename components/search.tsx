@@ -106,15 +106,20 @@ function Search(props: SearchProps) {
   };
 
   return (
-    <VStack w={width} h={height} borderRight="solid 1px grey">
-      <Heading>Search</Heading>
+    <VStack w={width} h={height}>
+      <Heading size="lg">Search</Heading>
       <Button onClick={() => clearFacets()}>Reset</Button>
       <List width="100%">
         {facetList.facets.map((f) => {
           return (
             <ListItem width="100%" key={f.title}>
-              <Heading>{f.title}</Heading>
-              <List width="100%">
+              <Heading size="md">{f.title}</Heading>
+              <List
+                width="100%"
+                paddingBottom={5}
+                marginBottom={5}
+                borderBottom="1px solid black"
+              >
                 {Object.entries(f.facetValues)
                   .sort((a, b) => b[1] - a[1])
                   .map((fv) => {
