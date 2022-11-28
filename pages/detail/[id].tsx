@@ -1,6 +1,6 @@
 import { Heading, HStack, VStack } from "@chakra-ui/react";
 
-export function DetailPage() {
+function DetailPage() {
   return (
     <HStack width="100%">
       <VStack>
@@ -9,3 +9,5 @@ export function DetailPage() {
     </HStack>
   );
 }
+
+export default DetailPage;
